@@ -1,8 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-
-from .models import *
+from .models import UserContact,UserContactMapping,UserProfile
 
 
 admin.site.register(UserContact)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import *
+from .models import UserProfile,UserContact,UserContactMapping
 from django.contrib.auth.models import User
 
 

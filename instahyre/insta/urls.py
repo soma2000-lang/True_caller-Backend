@@ -1,7 +1,8 @@
 from django.urls import path
 from insta.views import (
     UserContactList, RegisterList, LoginList, SpamList,
-    SearchNameList, SearchPhoneList)
+    SearchNameList, SearchPhoneList,SpamSearchList)
+
 
 urlpatterns = [
     path('contacts/', UserContactList.as_view(), name='contacts'),
@@ -10,5 +11,6 @@ urlpatterns = [
     path('spam/', SpamList.as_view(), name='spam'),
     path('search_name/', SearchNameList.as_view(), name='search_name'),
     path('search_phone/', SearchPhoneList.as_view(), name='search_phone'),
+    path('search_spam/',  SpamSearchList.as_view(), name='search_spam'),
 
 ]
