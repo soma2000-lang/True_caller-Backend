@@ -1,0 +1,86 @@
+[
+    {
+        "model": "contacts.usercontact",
+ 
+        "fields": {
+            "name": "John Smith",
+            "phone_number": "9876543210",
+            "email": "john.smith@example.com",
+            "spam": false
+        }
+    },
+    {
+        "model": "auth.user",
+
+        "fields": {
+            "username": "johnsmith",
+            "password": "pbkdf2_sha256$600000$your_hashed_password_here",
+            "email": "john.smith@example.com",
+            "first_name": "John",
+            "last_name": "Smith",
+            "is_active": true,
+            "date_joined": "2024-02-01T10:00:00Z",
+            "is_staff": false,
+            "is_superuser": false
+        }
+    },
+    {
+        "model": "contacts.userprofile",
+    
+        "fields": {
+            "user": 1,
+            "phone_number": "9876543210",
+            "spam": false
+        }
+    },
+    {
+        "model": "contacts.usercontactmapping",
+    
+        "fields": {
+            "user": 1,
+            "contact": 1
+        }
+    },
+    {
+        "model": "contacts.usercontact",
+    
+        "fields": {
+            "name": "Alice Johnson",
+            "phone_number": "8765432109",
+            "email": "alice.johnson@example.com",
+            "spam": false
+        }
+    },
+    {
+        "model": "auth.user",
+     
+        "fields": {
+            "username": "alicejohnson",
+            "password": "pbkdf2_sha256$600000$your_hashed_password_here",
+            "email": "alice.johnson@example.com",
+            "first_name": "Alice",
+            "last_name": "Johnson",
+            "is_active": true,
+            "date_joined": "2024-02-01T11:00:00Z",
+            "is_staff": false,
+            "is_superuser": false
+        }
+    },
+    {
+        "model": "contacts.userprofile",
+        "pk": 2,
+        "fields": {
+            "user": 2,
+            "phone_number": "8765432109",
+            "spam": false
+        }
+    },
+    {
+        "model": "contacts.usercontactmapping",
+        "pk": 2,
+        "fields": {
+            "user": 2,
+            "contact": 2
+        }
+    }
+]

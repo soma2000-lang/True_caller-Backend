@@ -13,15 +13,45 @@ from .models import UserContact, UserContactMapping, UserProfile
 from .serializers import ContactSerializer
 from rest_framework.views import APIView
 from django.db.models import Q
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+class BaseUserRateThrottle(UserRateThrottle):
+    rate = '1000/day'  
+
+class BaseAnonRateThrottle(AnonRateThrottle):
+    rate = '100/day'   # Limit anonymous users to 100 requests per day
+
+
+
+
+
+
 class UserContactList(APIView):
+    pagination_class = StandardResultsSetPagination
+    throttle_classes = [BaseUserRateThrottle]
     http_method_names = ['get', 'post']  
     permission_classes = [IsAuthenticated]
 
+    @method_decorator(cache_page(60 * 15))
     def get(self, request):
         contacts = UserContact.objects.all()
         serializer = ContactSerializer(contacts, many=True)
@@ -117,7 +147,7 @@ class LoginList(APIView):
 
 
 class SpamList(APIView):
-    http_method_names = ['post']  # Only allow POST for spam marking
+    http_method_names = ['post'] 
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
