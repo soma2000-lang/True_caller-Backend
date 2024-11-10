@@ -38,7 +38,7 @@ class BaseUserRateThrottle(UserRateThrottle):
     rate = '1000/day'  
 
 class BaseAnonRateThrottle(AnonRateThrottle):
-    rate = '100/day'   # Limit anonymous users to 100 requests per day
+    rate = '100/day'   
 
 
 
