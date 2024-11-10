@@ -19,7 +19,7 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 class UserContactList(APIView):
-    http_method_names = ['get', 'post']  # Explicitly define allowed methods
+    http_method_names = ['get', 'post']  
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -52,7 +52,7 @@ class UserContactList(APIView):
 
 
 class RegisterList(APIView):
-    http_method_names = ['post']  # Only allow POST for registration
+    http_method_names = ['post']  
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -89,7 +89,7 @@ class RegisterList(APIView):
 
 
 class LoginList(APIView):
-    http_method_names = ['post']  # Only allow POST for login
+    http_method_names = ['post'] 
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -136,7 +136,7 @@ class SpamList(APIView):
 
 
 class SearchNameList(APIView):
-    http_method_names = ['get']  # Only allow GET for searching
+    http_method_names = ['get']  
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -159,7 +159,7 @@ class SearchNameList(APIView):
 
 
 class SearchPhoneList(APIView):
-    http_method_names = ['get']  # Only allow GET for searching
+    http_method_names = ['get']  
     permission_classes = [IsAuthenticated]
     
     def get(self, request):
@@ -188,41 +188,102 @@ class SearchPhoneList(APIView):
 
 
 class SpamSearchList(APIView):
-    http_method_names = ['get']  # Only allow GET for searching
-    permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        name = request.GET.get('name', None)
-        phone_number = request.GET.get('phone_number', None)
 
-        if not any([name, phone_number]):
-            return Response(
-                {"error": "Please provide either name or phone number"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+   def get(self, request):
+       name = request.GET.get('name', None)
+       phone_number = request.GET.get('phone_number', None)
 
-        response_data = {
-            "name": None,
-            "phone_number": None,
-            "spam": False,
-            "spam_likelihood": "Unknown",
-            "is_registered": False,
-            "email": None
-        }
 
-        contact_query = Q()
-        if name:
-            contact_query |= Q(name=name)
-        if phone_number:
-            contact_query |= Q(phone_number=phone_number)
+       if not any([name, phone_number]):
+           return Response(
+               {"error": "Please provide either name or phone number"},
+               status=status.HTTP_400_BAD_REQUEST
+           )
 
-        contact = UserContact.objects.filter(contact_query).first()
-        if contact:
-            # ... rest of your existing code ...
-            return Response(response_data, status=status.HTTP_200_OK)
 
-        return Response(
-            {"error": "Contact not found"},
-            status=status.HTTP_404_NOT_FOUND
-        )
+     
+       response_data = {
+           "name": None,
+           "phone_number": None,
+           "spam": False,
+           "spam_likelihood": "Unknown",
+           "is_registered": False,
+           "email": None
+       }
+
+
+    
+       contact_query = Q()
+       if name:
+           contact_query |= Q(name=name)
+       if phone_number:
+           contact_query |= Q(phone_number=phone_number)
+
+
+
+
+       contact = UserContact.objects.filter(contact_query).first()
+       if contact:
+           response_data.update({
+               "name": contact.name,
+               "phone_number": contact.phone_number,
+               "spam": contact.spam
+           })
+
+
+           spam_reports = UserContact.objects.filter(
+               phone_number=contact.phone_number,
+               spam=True
+           ).count()
+
+
+           response_data["spam_likelihood"] = (
+               'High' if spam_reports > 2
+               else 'Medium' if spam_reports > 0
+               else 'Low'
+           )
+
+
+           try:
+  
+               user_profile = UserProfile.objects.get(phone_number=contact.phone_number)
+               user = User.objects.get(id=user_profile.user_id)
+               response_data["is_registered"] = True
+
+
+
+
+               is_in_contacts = UserContactMapping.objects.filter(
+                   user=user,
+                   contact__in=UserContact.objects.filter(
+                       phone_number=request.user.userprofile.phone_number
+                   )
+               ).exists()
+
+
+              
+               if is_in_contacts:
+                   response_data["email"] = user.email
+
+
+               if user_profile.spam:
+                   response_data["spam_likelihood"] = "High"
+
+
+           except (UserProfile.DoesNotExist, User.DoesNotExist):
+               pass
+
+
+           return Response(response_data, status=status.HTTP_200_OK)
+
+
+       return Response(
+           {"error": "Contact not found"},
+           status=status.HTTP_404_NOT_FOUND
+       )
+      
+
+
+        
         

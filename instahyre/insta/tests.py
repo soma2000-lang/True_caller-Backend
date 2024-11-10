@@ -188,7 +188,7 @@ class ContactAPITests(APITestCase):
         )
         
     
-        for _ in range(3):
+        for _ in range(3):a
             UserContact.objects.create(
                 name='Spam User',
                 phone_number='7777777777',
