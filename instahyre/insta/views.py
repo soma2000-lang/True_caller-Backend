@@ -45,7 +45,7 @@ class BaseAnonRateThrottle(AnonRateThrottle):
 
 
 
-class UserContactList(APIView):
+class UserContact(APIView):
     pagination_class = StandardResultsSetPagination
     throttle_classes = [BaseUserRateThrottle]
     http_method_names = ['get', 'post']  
@@ -81,7 +81,7 @@ class UserContactList(APIView):
         )
 
 
-class RegisterList(APIView):
+class Register(APIView):
     http_method_names = ['post']  
     permission_classes = [AllowAny]
 
@@ -118,7 +118,7 @@ class RegisterList(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LoginList(APIView):
+class Login(APIView):
     http_method_names = ['post'] 
     permission_classes = [AllowAny]
 
@@ -146,7 +146,7 @@ class LoginList(APIView):
         )
 
 
-class SpamList(APIView):
+class Spam(APIView):
     http_method_names = ['post'] 
     permission_classes = [IsAuthenticated]
 
@@ -165,7 +165,7 @@ class SpamList(APIView):
             )
 
 
-class SearchNameList(APIView):
+class SearchName(APIView):
     http_method_names = ['get']  
     permission_classes = [IsAuthenticated]
 
@@ -188,7 +188,7 @@ class SearchNameList(APIView):
         )
 
 
-class SearchPhoneList(APIView):
+class SearchPhone(APIView):
     http_method_names = ['get']  
     permission_classes = [IsAuthenticated]
     
@@ -217,7 +217,7 @@ class SearchPhoneList(APIView):
             return Response(serializer.data)
 
 
-class SpamSearchList(APIView):
+class SpamSearch(APIView):
 
 
    def get(self, request):
