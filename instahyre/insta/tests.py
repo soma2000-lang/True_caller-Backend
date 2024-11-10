@@ -195,4 +195,3 @@ class ContactAPITests(APITestCase):
         response = self.client.get(f"{url}?phone_number=7777777777")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['spam_likelihood'], 'High')
-```
